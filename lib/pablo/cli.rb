@@ -2,7 +2,7 @@ require 'optparse'
 
 module Pablo
   class CLI
-    def self.execute(stdout, arguments=[])
+    def self.execute(stdout, stderr, arguments=[])
 
       # NOTE: the option -p/--path= is given as an example, and should be replaced in your application.
 
@@ -28,19 +28,45 @@ module Pablo
         opts.parse!(arguments)
       end
 
-      path = options[:path]
-      url  = arguments.shift
-      if url =~ %r{picasaweb\.google\.[^\\]+\/([^\\]+)\/([^\\?]+)}
-        picasa_user, picasa_album = $1, $2
-        FileUtils.mkdir_p(path)
-        FileUtils.chdir(path) do
-          FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
-          FileUtils.chdir(album_path) do
-            p `pwd`
+      begin
+        path = options[:path]
+        url  = arguments.shift
+        if url =~ %r{picasaweb\.google\.[^\\]+\/([^\\]+)\/([^\\?]+)}
+          picasa_user, picasa_album = $1, $2
+          require "hpricot"
+          require "open-uri"
+        
+          stderr.puts "Fetching album information..."
+          begin
+            doc = Hpricot(open(url))
+          rescue OpenURI::HTTPError
+            stderr.puts "Cannot find album at url: #{url}"
+            exit
           end
+          require "pp"
+          pp images = doc.search("//noscript/div/a")
+          if images.size > 0
+            images.each do |image|
+              p thumbnail_url = image.search("/img")["src"]
+            end
+          else
+            stderr.puts "Cannot find any images"
+            exit
+          end
+          # FileUtils.mkdir_p(path)
+          # FileUtils.chdir(path) do
+          #   FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
+          #   FileUtils.chdir(album_path) do
+          #     doc = Hpricot(open(url))
+          #     rss_feed = doc.search("//div.lhcl_sidebox//a").find { |a| a.text.strip == "RSS" }
+          #     p rss_feed
+          #   end
+          # end
+        else
+          stdout.puts parser; exit
         end
-      else
-        stdout.puts parser; exit
+      rescue Interrupt
+      rescue SystemExit
       end
     end
   end

@@ -7,4 +7,4 @@ require 'rubygems'
 require File.expand_path(File.dirname(__FILE__) + "/../lib/pablo")
 require "pablo/cli"
 
-Pablo::CLI.execute(STDOUT, ARGV)
+Pablo::CLI.execute(STDOUT, STDERR, ARGV)
