@@ -17,7 +17,7 @@ This creates a nested folder (user/album) in the current folder in which the ima
 
 == INSTALL:
 
-* gem install pablo
+* sudo gem install pablo
 
 == REQUIREMENTS:
 
