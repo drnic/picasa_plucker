@@ -27,6 +27,8 @@ module Pablo
                 "Show this help message.") { stdout.puts opts; exit }
         opts.parse!(arguments)
       end
+      
+      require_curl stderr
 
       begin
         path = options[:path]
@@ -37,7 +39,7 @@ module Pablo
           FileUtils.chdir(path) do
             FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
             FileUtils.chdir(album_path) do
-              fetch_album_images(url, stdout, stderr)
+              fetch_album_images(url, stdout, stderrpab)
             end
           end
         else
@@ -72,6 +74,12 @@ module Pablo
         end
       else
         stderr.puts "Cannot find any images"; exit
+      end
+    end
+    
+    def self.require_curl(stderr)
+      if `which curl`.strip == ""
+        stderr.puts "Please install 'curl' to use pablo. Sorry about that."; exit
       end
     end
   end
