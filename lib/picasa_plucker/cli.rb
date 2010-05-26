@@ -1,6 +1,6 @@
 require 'optparse'
 
-module Pablo
+module PicasaPlucker
   class CLI
     def self.execute(stdout, stderr, arguments=[])
 
@@ -81,7 +81,7 @@ module Pablo
     
     def self.require_curl(stderr)
       if `which curl`.strip == ""
-        stderr.puts "Please install 'curl' to use pablo. Sorry about that."; exit
+        stderr.puts "Please install 'curl' to use picasa_plucker. Sorry about that."; exit
       end
     end
   end
