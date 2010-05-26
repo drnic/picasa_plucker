@@ -13,6 +13,7 @@ Hoe.plugin :cucumberfeatures
 $hoe = Hoe.spec 'pablo' do
   self.developer 'Dr Nic Williams', 'drnicwilliams@gmail.com'
   self.extra_deps << ['hpricot','>= 0.8.2']
+  self.extra_deps << ['ruby-progressbar','>= 0.0.9']
 end
 
 require 'newgem/tasks'

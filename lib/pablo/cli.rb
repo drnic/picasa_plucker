@@ -39,7 +39,7 @@ module Pablo
           FileUtils.chdir(path) do
             FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
             FileUtils.chdir(album_path) do
-              fetch_album_images(url, stdout, stderrpab)
+              fetch_album_images(url, stdout, stderr)
             end
           end
         else
@@ -51,8 +51,9 @@ module Pablo
     end
     
     def self.fetch_album_images(url, stdout = STDOUT, stderr = STDERR)
-      require "hpricot"
       require "open-uri"
+      require "hpricot"
+      require "progressbar"
     
       stderr.puts "Fetching album information..."
       begin
@@ -62,6 +63,8 @@ module Pablo
       end
       images = doc.search("//noscript/div/a")
       if images.size > 0
+        pbar = ProgressBar.new("Downloading", images.size, stderr)
+        pbar.set(0)
         images.each do |image|
           thumbnail_url = image.search("/img").first["src"]
           image_url = thumbnail_url.sub(%r{/s\d+}, '')
@@ -70,8 +73,10 @@ module Pablo
           # http://lh3.ggpht.com/_SRH16SUjNaU/S-2_vviX93I/AAAAAAAABfM/kxV884geg7Q/IMG_4017.JPG
           # http://lh4.ggpht.com/_SRH16SUjNaU/S-2_v5B7H0I/AAAAAAAABfQ/5_n1YGywxv0/IMG_4018.JPG
           image_file = File.basename(image_url)
-          system "curl '#{image_url}' -o '#{image_file}'"
+          system "curl '#{image_url}' -o '#{image_file}' --silent"
+          pbar.inc
         end
+        pbar.finish
       else
         stderr.puts "Cannot find any images"; exit
       end
