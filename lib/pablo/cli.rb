@@ -33,40 +33,45 @@ module Pablo
         url  = arguments.shift
         if url =~ %r{picasaweb\.google\.[^\\]+\/([^\\]+)\/([^\\?]+)}
           picasa_user, picasa_album = $1, $2
-          require "hpricot"
-          require "open-uri"
-        
-          stderr.puts "Fetching album information..."
-          begin
-            doc = Hpricot(open(url))
-          rescue OpenURI::HTTPError
-            stderr.puts "Cannot find album at url: #{url}"
-            exit
-          end
-          require "pp"
-          pp images = doc.search("//noscript/div/a")
-          if images.size > 0
-            images.each do |image|
-              p thumbnail_url = image.search("/img")["src"]
+          FileUtils.mkdir_p(path)
+          FileUtils.chdir(path) do
+            FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
+            FileUtils.chdir(album_path) do
+              fetch_album_images(url, stdout, stderr)
             end
-          else
-            stderr.puts "Cannot find any images"
-            exit
           end
-          # FileUtils.mkdir_p(path)
-          # FileUtils.chdir(path) do
-          #   FileUtils.mkdir_p(album_path = File.join(picasa_user, picasa_album))
-          #   FileUtils.chdir(album_path) do
-          #     doc = Hpricot(open(url))
-          #     rss_feed = doc.search("//div.lhcl_sidebox//a").find { |a| a.text.strip == "RSS" }
-          #     p rss_feed
-          #   end
-          # end
         else
           stdout.puts parser; exit
         end
       rescue Interrupt
       rescue SystemExit
+      end
+    end
+    
+    def self.fetch_album_images(url, stdout = STDOUT, stderr = STDERR)
+      require "hpricot"
+      require "open-uri"
+    
+      stderr.puts "Fetching album information..."
+      begin
+        doc = Hpricot(open(url))
+      rescue OpenURI::HTTPError
+        stderr.puts "Cannot find album at url: #{url}"; exit
+      end
+      images = doc.search("//noscript/div/a")
+      if images.size > 0
+        images.each do |image|
+          thumbnail_url = image.search("/img").first["src"]
+          image_url = thumbnail_url.sub(%r{/s\d+}, '')
+          
+          # http://lh4.ggpht.com/_SRH16SUjNaU/S-2_vpVwwZI/AAAAAAAABfI/0892I3WCOPU/IMG_4016.JPG
+          # http://lh3.ggpht.com/_SRH16SUjNaU/S-2_vviX93I/AAAAAAAABfM/kxV884geg7Q/IMG_4017.JPG
+          # http://lh4.ggpht.com/_SRH16SUjNaU/S-2_v5B7H0I/AAAAAAAABfQ/5_n1YGywxv0/IMG_4018.JPG
+          image_file = File.basename(image_url)
+          system "curl '#{image_url}' -o '#{image_file}'"
+        end
+      else
+        stderr.puts "Cannot find any images"; exit
       end
     end
   end
