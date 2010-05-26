@@ -12,7 +12,7 @@ Hoe.plugin :cucumberfeatures
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
 $hoe = Hoe.spec 'pablo' do
   self.developer 'Dr Nic Williams', 'drnicwilliams@gmail.com'
-  self.extra_deps         << ['hpricot','>= 0.8.2']
+  self.extra_deps << ['hpricot','>= 0.8.2']
 end
 
 require 'newgem/tasks'
