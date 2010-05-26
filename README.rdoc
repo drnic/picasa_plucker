@@ -4,6 +4,8 @@
 
 == DESCRIPTION:
 
+Pablo downloads all images from a Picasa web album.
+
 Your friends use Picasa (http://picasaweb.google.com) but you don't, so you can't easily download all the images in their albums? Pablo fixes that.
 
 Pablo takes the URL of someone's Picasa album, and downloads all the original images into your local machine. You can then import them to your favourite images application (iPhoto, etc).
@@ -13,7 +15,11 @@ Pablo takes the URL of someone's Picasa album, and downloads all the original im
     cd Photos
     pablo "<url>"
 
-This creates a nested folder (user/album) in the current folder in which the images are stored.
+For example:
+
+    pablo http://picasaweb.google.com/drnicwilliams/BanjoWilliamsBirth#
+
+This creates a nested folder (user/album, e.g. drnicwilliams/BanjoWilliamsBirth) in the current folder in which the images are stored.
 
 == INSTALL:
 
