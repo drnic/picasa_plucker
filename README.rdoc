@@ -1,32 +1,34 @@
 = pablo
 
-* http://github.com/#{github_username}/#{project_name}
+* http://github.com/drnic/pablo
 
 == DESCRIPTION:
 
-FIX (describe your package)
+Your friends use Picasa (http://picasaweb.google.com) but you don't, so you can't easily download all the images in their albums? Pablo fixes that.
 
-== FEATURES/PROBLEMS:
+Pablo takes the URL of someone's Picasa album, and downloads all the original images into your local machine. You can then import them to your favourite images application (iPhoto, etc).
 
-* FIX (list of features or problems)
+== USAGE:
 
-== SYNOPSIS:
+    cd Photos
+    pablo "<url>"
 
-  FIX (code sample of usage)
-
-== REQUIREMENTS:
-
-* FIX (list of requirements)
+This creates a nested folder (user/album) in the current folder in which the images are stored.
 
 == INSTALL:
 
-* FIX (sudo gem install, anything else)
+* gem install pablo
+
+== REQUIREMENTS:
+
+* curl
+* rubygems: hpricot, ruby-progressbar (installed automatically via 'gem' command above)
 
 == LICENSE:
 
 (The MIT License)
 
-Copyright (c) 2010 FIXME full name
+Copyright (c) 2010 Dr Nic Williams, drnicwilliams@gmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the

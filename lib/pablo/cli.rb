@@ -69,9 +69,6 @@ module Pablo
           thumbnail_url = image.search("/img").first["src"]
           image_url = thumbnail_url.sub(%r{/s\d+}, '')
           
-          # http://lh4.ggpht.com/_SRH16SUjNaU/S-2_vpVwwZI/AAAAAAAABfI/0892I3WCOPU/IMG_4016.JPG
-          # http://lh3.ggpht.com/_SRH16SUjNaU/S-2_vviX93I/AAAAAAAABfM/kxV884geg7Q/IMG_4017.JPG
-          # http://lh4.ggpht.com/_SRH16SUjNaU/S-2_v5B7H0I/AAAAAAAABfQ/5_n1YGywxv0/IMG_4018.JPG
           image_file = File.basename(image_url)
           system "curl '#{image_url}' -o '#{image_file}' --silent"
           pbar.inc
